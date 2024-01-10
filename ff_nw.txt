@@ -1,43 +1,44 @@
-#Feed forward
-import numpy as np
 import tensorflow as tf
+from sklearn.datasets import load_iris
 from sklearn.model_selection import train_test_split
-from sklearn.datasets import make_classification
-from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import classification_report
+import numpy as np
 
-# Generate a sample dataset for binary classification
-X, y = make_classification(n_samples=1000, n_features=20, n_classes=2, random_state=42)
 
-# Split the dataset into training and testing sets
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+# Load Iris dataset
+iris = load_iris()
+X = iris.data
+y = iris.target
 
-# Build the feedforward neural network
+# Split the data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
+
+# Standardize the data
+scaler = StandardScaler()
+X_train = scaler.fit_transform(X_train)
+X_test = scaler.transform(X_test)
+
+# Define the architecture of the neural network
 model = tf.keras.Sequential([
-    tf.keras.layers.Dense(64, activation='relu', input_shape=(X_train.shape[1],)),
+    tf.keras.layers.Dense(64, activation='relu', input_dim=X_train.shape[1]),
     tf.keras.layers.Dense(32, activation='relu'),
-    tf.keras.layers.Dense(1, activation='sigmoid')
+    tf.keras.layers.Dense(3, activation='softmax')  # 3 output neurons for the 3 classes in Iris
 ])
 
 # Compile the model
-model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
+model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
 
 # Train the model
-model.fit(X_train, y_train, epochs=10, batch_size=32, validation_split=0.2)
+model.fit(X_train, y_train, epochs=100, validation_split=0.1)
 
 # Evaluate the model on the test set
-y_pred_proba = model.predict(X_test)
-y_pred_binary = np.round(y_pred_proba)
+y_pred_probs = model.predict(X_test)
+y_pred = np.argmax(y_pred_probs, axis=1)
 
-# Convert probabilities to binary predictions
 
-# Assess model performance
-accuracy = accuracy_score(y_test, y_pred_binary)
-conf_matrix = confusion_matrix(y_test, y_pred_binary)
-classification_rep = classification_report(y_test, y_pred_binary)
+---------------
 
-# Print evaluation metrics
-print(f"Test Accuracy: {accuracy}")
-print("\nConfusion Matrix:")
-print(conf_matrix)
-print("\nClassification Report:")
-print(classification_rep)
+
+# Classification report
+print(classification_report(y_test, y_pred))
