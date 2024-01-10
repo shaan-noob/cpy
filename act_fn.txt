@@ -1,0 +1,71 @@
+# activations functions :
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+class Neuron:
+    def __init__(self, input_size, input_values):
+        self.weights = np.random.rand(input_size)
+        self.bias = np.random.rand()
+        self.inputs = input_values
+        self.output = 0
+        self.output2 = 0
+        self.output3 = 0 
+        self.output4 = 0
+        self.output5 = 0
+        self.calculate()
+
+    def sigmoid(self, a):
+        return 1 / (1 + np.exp(-a))
+
+    def tanh(self, a):
+        return (np.exp(a) - np.exp(-a)) / (np.exp(a) + np.exp(-a))
+
+    def relu(self, a):
+        return np.maximum(0, a)
+
+    def leaky_relu(self, a):
+        return np.maximum(0.1 * a, a)
+
+    def swish(self, a):
+        return a / (1 + np.exp(-a))
+
+    def calculate(self):
+        weighted_sum = np.dot(self.weights, self.inputs) + self.bias
+        self.output = self.sigmoid(weighted_sum)
+        self.output2 = self.tanh(weighted_sum)
+        self.output3 = self.relu(weighted_sum)
+        self.output4 = self.leaky_relu(weighted_sum)
+        self.output5 = self.swish(weighted_sum)
+        return self.output, self.output2, self.output3, self.output4, self.output5
+
+    def display1(self):
+        print("Output of sigmoid:", self.output)
+        print("Output of tanh:", self.output2)
+        print("Output of Relu:", self.output3)
+        print("Output of leaky relu:", self.output4)
+        print("Output of swish:", self.output5)
+
+
+    def plot_activation_function(self, activation_function, label):
+        x = np.linspace(-5, 5, 100)
+        y = activation_function(x)
+        plt.plot(x, y, label=label)
+
+input_values = np.array([1, 1, 1])
+n1 = Neuron(3, input_values)
+n1.display1()
+
+# Plot activation functions
+n1.plot_activation_function(n1.sigmoid, 'Sigmoid')
+n1.plot_activation_function(n1.tanh, 'Tanh')
+n1.plot_activation_function(n1.relu, 'ReLU')
+n1.plot_activation_function(n1.leaky_relu, 'Leaky ReLU')
+n1.plot_activation_function(n1.swish, 'Swish')
+
+# Show the legend and plot
+plt.legend()
+plt.xlabel('Input')
+plt.ylabel('Output')
+plt.title('Activation Functions')
+plt.show()
