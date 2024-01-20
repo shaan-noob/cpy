@@ -1,0 +1,26 @@
+# 2
+class Complex:
+    def __init__(self, real_part, img_part):
+        self.real_part = real_part
+        self.img_part = img_part
+
+    def add_complex(self, other):
+        # Adding real and imaginary parts separately
+        sum_real = self.real_part + other.real_part
+        sum_img = self.img_part + other.img_part
+        # Creating a new Complex instance for the result
+        result_complex = Complex(sum_real, sum_img)
+        return result_complex
+
+
+# Creating instances C1 and C2
+C1 = Complex(2, 3)
+C2 = Complex(1, 4)
+
+# Adding C1 and C2 to get C3
+C3 = C1.add_complex(C2)
+
+# Displaying the results
+print(f"C1: {C1.real_part} + {C1.img_part}i")
+print(f"C2: {C2.real_part} + {C2.img_part}i")
+print(f"C3 (C1 + C2): {C3.real_part} + {C3.img_part}i")

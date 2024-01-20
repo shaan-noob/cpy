@@ -1,0 +1,21 @@
+# 3
+class Song:
+    def __init__(self, lyrics):
+        self.lyrics = lyrics
+
+    def sing_me_a_song(self):
+        for line in self.lyrics:
+            print(line)
+
+# Define a variable
+happy_bday_lyrics = [
+    "May god bless you, ",
+    "Happy birthday to you,",
+    "Happy birthday to dear friend."
+]
+
+# Create an instance of the Song class
+happy_bday_song = Song(happy_bday_lyrics)
+
+# Call the sing_me_a_song method to print the lyrics
+happy_bday_song.sing_me_a_song()

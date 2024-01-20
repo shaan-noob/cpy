@@ -1,0 +1,48 @@
+# 4
+class Dog:
+    def __init__(self, name, size, breed='Unknown', dob='unknown'):
+        self.name = name.title()
+        self.size = size
+        self.breed = breed
+        self.dob = dob
+
+    def bark(self):
+        print('woff!')
+
+    def get_name(self):
+        return self.name
+
+    def set_name(self, new_name):
+        if 2 <= len(new_name) <= 30 and new_name.isalpha():
+            self.name = new_name.title()
+            print(f"Name set to: {self.name}")
+        else:
+            print("Invalid name. Please provide an alphabetical name between 2 and 30 characters.")
+
+    def dog_years(self):
+        # Assuming the age is provided in DD/MM/YYYY format
+        # Extracting the birth year and calculating age in dog years
+        birth_year = int(self.dob.split('/')[-1])
+        current_year = 2024  # Assuming the current year is 2024
+        age_in_years = current_year - birth_year
+        age_in_dog_years = age_in_years * 7
+        return age_in_dog_years
+
+# Example usage
+my_dog = Dog(name='Buddy', size='Medium', breed='Labrador', dob='15/05/2010')
+
+# Accessing attributes
+print(f"Dog's name: {my_dog.get_name()}")
+print(f"Dog's size: {my_dog.size}")
+print(f"Dog's breed: {my_dog.breed}")
+print(f"Dog's date of birth: {my_dog.dob}")
+
+# Calling methods
+my_dog.bark()
+
+# Setting a new name
+my_dog.set_name('Max')
+
+# Calculating age in dog years
+dog_age_in_years = my_dog.dog_years()
+print(f"Dog's age in dog years: {dog_age_in_years}")
