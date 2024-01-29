@@ -1,0 +1,37 @@
+import threading
+import time
+
+# Synchronization lock
+lock = threading.Lock()
+
+# Function to print numbers from 1 to 5
+def function_A():
+    for i in range(1, 6):
+        with lock:
+            print(i, end=' ')
+            time.sleep(0.5)
+
+# Function to print letters 'A' to 'E'
+def function_B():
+    for char in 'ABCDE':
+        with lock:
+            print(char, end=' ')
+            time.sleep(0.5)
+
+def main():
+    # Create two threads
+    thread_A = threading.Thread(target=function_A)
+    thread_B = threading.Thread(target=function_B)
+
+    # Start both threads
+    thread_A.start()
+    thread_B.start()
+
+    # Wait for both threads to complete
+    thread_A.join()
+    thread_B.join()
+
+    print("\nProgram finished.")
+
+if __name__ == "__main__":
+    main()

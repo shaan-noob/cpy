@@ -1,0 +1,39 @@
+# 6b
+class FormulaError(Exception):
+    pass
+
+def calculate_result(number1, operator, number2):
+    if operator == '+':
+        return number1 + number2
+    elif operator == '-':
+        return number1 - number2
+    else:
+        raise FormulaError("Invalid operator. Only '+' and '-' are allowed.")
+
+while True:
+    try:
+        user_input = input("Enter a formula (e.g., 1 + 1) or 'quit' to exit: ")
+        
+        if user_input.lower() == 'quit':
+            break  # Exit the loop if the user enters 'quit'
+
+        elements = user_input.split()
+        
+        if len(elements) != 3:
+            raise FormulaError("Invalid formula. Please provide a formula with 3 elements.")
+        
+        number1 = float(elements[0])
+        operator = elements[1]
+        number2 = float(elements[2])
+
+        if operator not in ('+', '-'):
+            raise FormulaError("Invalid operator. Only '+' and '-' are allowed.")
+
+        result = calculate_result(number1, operator, number2)
+        print("Result:", result)
+
+    except FormulaError as e:
+        print("Error:", e)
+    
+    except ValueError:
+        print("Error: Invalid input. Please provide valid numeric values.")
