@@ -1,0 +1,27 @@
+# 8 
+
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.datasets import make_blobs
+from sklearn.decomposition import PCA
+
+def covers_theorem_demo(num_samples=300, num_features=2, num_clusters=3, noise=0.1):
+    X, y = make_blobs(n_samples=num_samples, n_features=num_features, centers=num_clusters, random_state=42, cluster_std=noise)
+    X_pca = PCA(2).fit_transform(X)
+
+    plt.figure(figsize=(10, 6))
+    plt.scatter(X_pca[:, 0], X_pca[:, 1], c=y, cmap='viridis', edgecolor='k', s=50)
+    plt.title("Original Data with Clusters"), plt.xlabel("Principal Component 1"), plt.ylabel("Principal Component 2"), plt.show()
+
+    distances = np.linalg.norm(X[:, np.newaxis, :] - X, axis=-1)
+    avg_distance, max_distance = np.mean(distances), np.max(distances)
+
+    print(f"Avg Distance: {avg_distance}\nMax Distance: {max_distance}")
+
+    plt.figure(figsize=(10, 6))
+    plt.hist(distances.flatten(), bins=50, color='skyblue', edgecolor='black')
+    plt.title("Pattern Separability: Histogram of Pairwise Distances"), plt.xlabel("Pairwise Distance"), plt.ylabel("Frequency"), plt.show()
+
+if __name__ == "__main__":
+    covers_theorem_demo()
+

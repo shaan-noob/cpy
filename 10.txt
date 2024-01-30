@@ -1,0 +1,42 @@
+# 10 
+
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn import datasets
+
+class SelfOrganizingMap:
+    def __init__(self, input_size, map_size, learning_rate=0.1, sigma=1.0):
+        self.weights = np.random.rand(*map_size, input_size)
+        self.lr, self.sigma = learning_rate, sigma
+
+    def find_winner(self, x):
+        return np.unravel_index(np.argmin(np.linalg.norm(self.weights - x, axis=-1)), self.weights.shape[:2])
+
+    def update_weights(self, x, winner):
+        d = np.linalg.norm(np.indices(self.weights.shape[:2]).T - np.array(winner).reshape(-1, 2), axis=-1)
+        influence = np.exp(-d**2 / (2 * self.sigma**2))
+        self.weights += self.lr * influence[:, :, None] * (x - self.weights)
+
+    def train(self, data, epochs):
+        for _ in range(epochs):
+            for x in data:
+                self.update_weights(x, self.find_winner(x))
+
+    def visualize_learning_process(self, data, epochs):
+        plt.figure(figsize=(15, 15))
+        for epoch in range(epochs):
+            plt.subplot(epochs//5, 5, epoch+1)
+            plt.title(f'Epoch {epoch + 1}')
+            plt.scatter(data[:, 0], data[:, 1], c='blue', label='Data points')
+            plt.scatter(*self.weights.reshape(-1, 2).T, c='red', marker='o', s=100)
+            self.train(data, epochs=1)
+        plt.tight_layout()
+        plt.show()
+
+# Example usage:
+if __name__ == "__main__":
+    iris = datasets.load_iris()
+    data = (iris.data[:, :2] - np.min(iris.data[:, :2], axis=0)) / np.ptp(iris.data[:, :2])
+    
+    som = SelfOrganizingMap(data.shape[1], (10, 10))
+    som.visualize_learning_process(data, epochs=20)
