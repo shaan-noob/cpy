@@ -1,0 +1,29 @@
+from gensim.models import Word2Vec, Doc2Vec
+from gensim.models.doc2vec import TaggedDocument
+from sklearn.metrics.pairwise import cosine_similarity
+from nltk.tokenize import word_tokenize
+import numpy as np
+import nltk
+
+nltk.download('punkt')
+
+docs = ["Natural language processing is a subfield of linguistics, computer science, and artificial intelligence concerned with the interactions between computers and human language.",
+        "Machine learning is the scientific study of algorithms and statistical models that computer systems use to perform a specific task without using explicit instructions, relying on patterns and inference instead."]
+
+tokens_docs = [word_tokenize(doc.lower()) for doc in docs]
+
+word2vec_model = Word2Vec(tokens_docs, min_count=1, vector_size=100)
+doc2vec_model = Doc2Vec([TaggedDocument(words=words, tags=[str(i)]) for i, words in enumerate(tokens_docs)], vector_size=100, window=2, min_count=1, workers=4, epochs=100)
+
+cosine_similarity_fn = lambda v1, v2: cosine_similarity([v1], [v2])[0][0]
+jaccard_similarity_fn = lambda t1, t2: len(set(t1) & set(t2)) / len(set(t1) | set(t2))
+
+word2vec_cosine_similarity = cosine_similarity_fn(np.mean([word2vec_model.wv[word] for word in tokens_docs[0]], axis=0), np.mean([word2vec_model.wv[word] for word in tokens_docs[1]], axis=0))
+word2vec_jaccard_similarity = jaccard_similarity_fn(tokens_docs[0], tokens_docs[1])
+doc2vec_cosine_similarity = cosine_similarity_fn(doc2vec_model.infer_vector(tokens_docs[0]), doc2vec_model.infer_vector(tokens_docs[1]))
+doc2vec_jaccard_similarity = jaccard_similarity_fn(tokens_docs[0], tokens_docs[1])
+
+print("Word2Vec Cosine Similarity:", word2vec_cosine_similarity,
+      "\nWord2Vec Jaccard Similarity:", word2vec_jaccard_similarity,
+      "\nDoc2Vec Cosine Similarity:", doc2vec_cosine_similarity,
+      "\nDoc2Vec Jaccard Similarity:", doc2vec_jaccard_similarity)
