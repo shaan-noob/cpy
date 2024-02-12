@@ -1,0 +1,37 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+np.random.seed(42)
+mean_class1 = [2, 2]
+cov_class1 = [[1, 0.5], [0.5, 1]]
+class1_samples = np.random.multivariate_normal(mean_class1, cov_class1, 100)
+
+mean_class2 = [-2, -2]
+cov_class2 = [[1, -0.5], [-0.5, 1]]
+class2_samples = np.random.multivariate_normal(mean_class2, cov_class2, 100)
+
+X = np.vstack([class1_samples, class2_samples])
+y = np.hstack([np.zeros(100), np.ones(100)])
+
+plt.scatter(X[:, 0], X[:, 1], c=y, cmap='viridis', edgecolors='k')
+plt.title("Synthetic 2D Dataset with Two Classes")
+plt.xlabel("Feature 1")
+plt.ylabel("Feature 2")
+plt.show()
+
+def linear_discriminator(x, w, b):
+    return np.dot(x, w) + b
+
+weights = np.random.rand(2)
+bias = np.random.rand()
+
+def decision_boundary(x):
+    return - (weights[0] * x + bias) / weights[1]
+
+plt.scatter(X[:, 0], X[:, 1], c=y, cmap='viridis', edgecolors='k')
+plt.plot([-5, 5], [decision_boundary(-5), decision_boundary(5)], 'r--', label="Decision Boundary")
+plt.title("Linear Discriminator with Decision Boundary")
+plt.xlabel("Feature 1")
+plt.ylabel("Feature 2")
+plt.legend()
+plt.show()

@@ -1,0 +1,33 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+np.random.seed(42)
+data = np.concatenate([
+    np.random.normal(loc=[4, 4], scale=[1, 1], size=(50, 2)),
+    np.random.normal(loc=[8, 8], scale=[1, 1], size=(50, 2)),
+    np.random.normal(loc=[12, 4], scale=[1, 1], size=(50, 2))
+])
+
+grid_size = 10
+learning_rate = 0.1
+epochs = 100
+
+weights = np.random.rand(grid_size, grid_size, 2)
+
+for epoch in range(epochs):
+    for input_vector in data:
+        bmu = np.unravel_index(np.argmin(np.linalg.norm(weights - input_vector, axis=2)), weights.shape)
+        weights += learning_rate * (input_vector - weights)
+
+    if epoch % 10 == 0 or epoch == epochs - 1:
+        plt.scatter(data[:, 0], data[:, 1], alpha=0.5, label='Data')
+        plt.scatter(weights[:, :, 0], weights[:, :, 1], marker='x', s=200, label='SOM Weights')
+        plt.title(f'SOM Training - Epoch {epoch + 1}/{epochs}')
+        plt.legend()
+        plt.show()
+
+plt.scatter(data[:, 0], data[:, 1], alpha=0.5, label='Data')
+plt.scatter(weights[:, :, 0], weights[:, :, 1], marker='x', s=200, label='SOM Weights')
+plt.title('Final SOM Clustering')
+plt.legend()
+plt.show()
