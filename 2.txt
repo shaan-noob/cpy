@@ -19,20 +19,16 @@ class RBFNetwork:
         kmeans = KMeans(n_clusters=self.num_centers, random_state=42)
         kmeans.fit(X)
         self.centers = kmeans.cluster_centers_
-
         rbf_activations = np.exp(-self.gamma * np.linalg.norm(X[:, np.newaxis] - self.centers, axis=2)**2)
-
-        lr = LinearRegression()
-        lr.fit(rbf_activations, y)
+        lr = LinearRegression().fit(rbf_activations, y)
         self.weights = lr.coef_
+        return self  # return the object itself after fitting
 
     def predict(self, X):
         rbf_activations = np.exp(-self.gamma * np.linalg.norm(X[:, np.newaxis] - self.centers, axis=2)**2)
         return np.dot(rbf_activations, self.weights)
 
-rbf_model = RBFNetwork(num_centers=10, gamma=1.0)
-rbf_model.fit(X, y)
-
+rbf_model = RBFNetwork(num_centers=10, gamma=1.0).fit(X, y)
 X_test = np.arange(0.0, 5.0, 0.01)[:, np.newaxis]
 y_pred = rbf_model.predict(X_test)
 
