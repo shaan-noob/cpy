@@ -5,28 +5,20 @@ from sklearn.preprocessing import StandardScaler
 import pandas as pd
 from sklearn.model_selection import train_test_split
 
-# Load the Boston housing prices dataset from the original source
 data_url = "http://lib.stat.cmu.edu/datasets/boston"
-raw_df = pd.read_csv(data_url, sep="\s+", skiprows=22, header=None)
-data = np.hstack([raw_df.values[::2, :], raw_df.values[1::2, :2]])
-target = raw_df.values[1::2, 2]
+df = pd.read_csv(data_url, sep="\s+", skiprows=22, header=None)
+data, target = np.hstack([df.values[::2, :], df.values[1::2, :2]]), df.values[1::2, 2]
 
-# Split the dataset into training and testing sets
 x_train, x_test, y_train, y_test = train_test_split(data, target, test_size=0.2, random_state=42)
 
-# Scale the input features
 scaler = StandardScaler()
-x_train_scaled = scaler.fit_transform(x_train)
-x_test_scaled = scaler.transform(x_test)
+x_train_scaled, x_test_scaled = scaler.fit_transform(x_train), scaler.transform(x_test)
 
-# Define and train the MLP regressor
 model = MLPRegressor(hidden_layer_sizes=(16, 8), activation='relu', solver='adam', max_iter=100)
 model.fit(x_train_scaled, y_train)
 
-# Predict housing prices on the testing data
 y_pred = model.predict(x_test_scaled)
 
-# Plot actual vs predicted prices
 plt.scatter(y_test, y_pred)
 plt.xlabel('Actual Prices')
 plt.ylabel('Predicted Prices')
